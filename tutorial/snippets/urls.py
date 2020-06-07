@@ -1,18 +1,58 @@
-from django.conf.urls import url
+from rest_framework.urlpatterns import format_suffix_patterns
+from snippets.views import SnippetViewSet, UserViewSet, api_root
+from rest_framework import renderers
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from snippets import views
 
-from snippets.views import UserList, UserDetail, SnippetDetail, SnippetList
+# Create a router and register our viewsets with it.
+router = DefaultRouter()
+router.register(r'snippets', views.SnippetViewSet)
+router.register(r'users', views.UserViewSet)
 
-# router = DefaultRouter()
-# router.register(r'snippets', SnippetViewSet)
+# 뷰셋 사용, 라우터 미사용
+# snippet_list = SnippetViewSet.as_view({
+#     'get': 'list',
+#     'post': 'create'
+# })
+# snippet_detail = SnippetViewSet.as_view({
+#     'get': 'retrieve',
+#     'put': 'update',
+#     'patch': 'partial_update',
+#     'delete': 'destroy'
+# })
+# snippet_highlight = SnippetViewSet.as_view({
+#     'get': 'highlight'
+# }, renderer_classes=[renderers.StaticHTMLRenderer])
+# user_list = UserViewSet.as_view({
+#     'get': 'list'
+# })
+# user_detail = UserViewSet.as_view({
+#     'get': 'retrieve'
+# })
 
+# 뷰셋 사용, 라우터 사용
+# The API URLs are now determined automatically by the router.
 urlpatterns = [
-    path('snippets/', SnippetList.as_view()),
-    path('snippets/<int:pk>/', SnippetDetail.as_view()),
-    path('users/', UserList.as_view()),
-    path('users/<int:pk>/', UserDetail.as_view()),
-    path('api-auth/', include('rest_framework.urls')),
-    # path('', include(router.urls)),
-    # url(r'^', include(router.urls, namespace="myapp")),
+    path('', include(router.urls)),
 ]
+
+# 뷰셋 사용, 라우터 미사용
+# urlpatterns = [
+#     # path('snippets/', SnippetList.as_view()),
+#     # path('snippets/<int:pk>/', SnippetDetail.as_view()),
+#     # path('users/', UserList.as_view()),
+#     # path('users/<int:pk>/', UserDetail.as_view()),
+#     path('api-auth/', include('rest_framework.urls')),
+#     # path('', include(router.urls)),
+#     # url(r'^', include(router.urls, namespace="myapp")),
+# ]
+
+# urlpatterns = format_suffix_patterns([
+#     path('', api_root),
+#     path('snippets/', snippet_list, name='snippet-list'),
+#     path('snippets/<int:pk>/', snippet_detail, name='snippet-detail'),
+#     path('snippets/<int:pk>/highlight/', snippet_highlight, name='snippet-highlight'),
+#     path('users/', user_list, name='user-list'),
+#     path('users/<int:pk>/', user_detail, name='user-detail')
+# ])
